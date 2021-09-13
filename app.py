@@ -19,15 +19,24 @@ def index():
             [0, 3, 6], [1, 4, 7], [2, 5, 8],
             [0, 4, 8], [2, 4, 6]
         ]
+        wp = 0
+        bp = 0
         for axis in axes:
             print(f"the axis:: {axis}")
             # check for playable space
             axis_string = f"{board[axis[0]]}{board[axis[1]]}{board[axis[2]]}"
+            print(f"axis string ::{axis_string}::")
             if axis_string.count(" ") > 0:
-                print(f"Playable spaces :: {axis_string.count(' ')}")
-                break
+                if isWinningPosition(axis_string):
+                    print(f"winning position on:: {axis}")
+                    wp += 1
+                if isBlockablePosition(axis_string):
+                    print(f"blockable position on:: {axis}")
+                    bp += 1
             else:
                 print("no playable space on this axis: ", axis)
+
+        print(f"wp: {wp} --- bp: {bp}")
 
         return f"valid board :: {isValidBoard(board)}"
     else:
