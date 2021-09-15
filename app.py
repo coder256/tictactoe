@@ -23,9 +23,29 @@ def index():
         edge_axes = [
             [0, 1, 2], [0, 3, 6], [6, 7, 8], [2, 5, 8]
         ]
+        diagonal_axes = [
+            [0, 4, 8], [2, 4, 6]
+        ]
+        corners = [0, 2, 6, 8]
+
         # check if board is empty
         if board.count(" ") == 9:
-            result = play(board, 0)
+            # return play(board, 0) todo uncomment line
+            return f"valid board :: {urllib.parse.quote_plus(play(board, 0))}"  # todo comment out line
+
+        # check if x played corner move first, play center
+        if board.count("x") == 1 and board.count(" ") == 8 and board.index("x") in corners:
+            print("x played corner first, play center")
+            # play center
+            # return play(board, 4) todo uncomment line
+            return f"valid board :: {urllib.parse.quote_plus(play(board, 4))}"  # todo comment out line
+
+        # check if x played non corner move first, play corner
+        if board.count("x") == 1 and board.count(" ") == 8 and board.index("x") not in corners:
+            print("x played non corner first, play corner")
+            # play corner
+            # return play(board, 8) todo uncomment line
+            return f"valid board :: {urllib.parse.quote_plus(play(board, 8))}"  # todo comment out line
 
         wp = 0
         bp = 0
@@ -73,19 +93,41 @@ def index():
                     print("playable blockable position ::", position)
                     result = play(board, position)
                     break
+        elif isXForkPossible(board):
+            print("x fork possible")
+            # play along edge
+            for edge in edge_axes:
+                if board[edge[1]] == " ":
+                    # return play(board, edge[1]) todo uncomment line
+                    return f"valid board :: {urllib.parse.quote_plus(play(board, edge[1]))}" # todo comment line out
         elif pc > 0:
             # play corner
             if board[cAxis[0]] == " ":
                 print(f"playable corner position :: {cAxis[0]}")
-                result = play(board, cAxis[0])
+                # return play(board, cAxis[0]) todo uncomment line
+                return f"valid board :: {urllib.parse.quote_plus(play(board, cAxis[0]))}"  # todo comment line out
             else:
                 print(f"playable corner position :: {cAxis[2]}")
-                result = play(board, cAxis[2])
-        else:
+                # return play(board, cAxis[2]) todo uncomment line
+                return f"valid board :: {urllib.parse.quote_plus(play(board, cAxis[2]))}"  # todo comment line out
+        elif isOForkPossible(board):
+            print(f"O fork possible")
+            for axis in diagonal_axes:
+                if board[axis[0]] == "o":
+                    # return play(board, axis[2]) todo uncomment line
+                    return f"valid board :: {urllib.parse.quote_plus(play(board, axis[2]))}"  # todo comment line out
+                else:
+                    # return play(board, axis[0]) todo uncomment line
+                    return f"valid board :: {urllib.parse.quote_plus(play(board, axis[0]))}"  # todo comment line out
             pass
+        else:
+            print("NO PLANNED PLAYABLE POSITION FOUND, PLAY RANDOM")
+            for i, c in enumerate(board):
+                if c == " ":
+                    return play(board, i)
 
         return f"valid board :: {urllib.parse.quote_plus(result)}"
-        # return f"valid board :: {result}"
+        # return f"valid board :: {result}" todo uncomment line, comment above line
     else:
         return invalidBoard()
 
@@ -135,15 +177,36 @@ def isWinningPosition(axisString):
     if axisString.count("o") == 2:
         return True
 
+    return False
+
 
 def isBlockablePosition(axisString):
     if axisString.count("x") == 2:
         return True
 
+    return False
+
 
 def isPlayableCorner(axisString):
     if axisString.count("x") == 1 and axisString.count(" ") == 2:
         return True
+
+    return False
+
+def isXForkPossible(board):
+    diagonalOne = f"{board[0]}{board[4]}{board[8]}"
+    diagonalTwo = f"{board[2]}{board[4]}{board[6]}"
+    if diagonalOne.count("x") == 2 or diagonalTwo.count("x") == 2:
+        return True
+
+    return False
+
+def isOForkPossible(board):
+    diagonalOne = f"{board[0]}{board[4]}{board[8]}"
+    diagonalTwo = f"{board[2]}{board[4]}{board[6]}"
+    if (diagonalOne.count("o") == 1 and diagonalOne.count(" ") == 2) or (diagonalTwo.count("o") == 1 and diagonalTwo.count(" ") == 2):
+        return True
+    return False
 
 
 def play(board, position):
