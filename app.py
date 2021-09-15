@@ -20,14 +20,19 @@ def index():
             [0, 3, 6], [1, 4, 7], [2, 5, 8],
             [0, 4, 8], [2, 4, 6]
         ]
+        edge_axes = [
+            [0, 1, 2], [0, 3, 6], [6, 7, 8], [2, 5, 8]
+        ]
         # check if board is empty
         if board.count(" ") == 9:
             result = play(board, 0)
 
         wp = 0
         bp = 0
+        pc = 0
         wAxis = []
         bAxis = []
+        cAxis = []
         for axis in axes:
             print(f"the axis:: {axis}")
             # check for playable space
@@ -42,11 +47,16 @@ def index():
                     print(f"blockable position on:: {axis}")
                     bAxis = axis
                     bp += 1
+                if axis in edge_axes and isPlayableCorner(axis_string):
+                    print(f"found playable corner on:: {axis}")
+                    cAxis = axis
+                    pc += 1
+
             else:
                 print("no playable space on this axis: ", axis)
 
         print(f"wp: {wp} --- bp: {bp}")
-        print(f"wAxis: {wAxis} --- bAxis: {bAxis}")
+        print(f"wAxis: {wAxis} --- bAxis: {bAxis} --- cAxis: {cAxis}")
 
         # play
         # play winning position
@@ -55,13 +65,24 @@ def index():
                 if board[position] == " ":
                     print("playable winning position ::", position)
                     result = play(board, position)
-
-        # play blocking move
-        if bp > 0:
+                    break
+        elif bp > 0:
+            # play blocking move
             for position in bAxis:
                 if board[position] == " ":
                     print("playable blockable position ::", position)
                     result = play(board, position)
+                    break
+        elif pc > 0:
+            # play corner
+            if board[cAxis[0]] == " ":
+                print(f"playable corner position :: {cAxis[0]}")
+                result = play(board, cAxis[0])
+            else:
+                print(f"playable corner position :: {cAxis[2]}")
+                result = play(board, cAxis[2])
+        else:
+            pass
 
         return f"valid board :: {urllib.parse.quote_plus(result)}"
         # return f"valid board :: {result}"
@@ -89,7 +110,7 @@ def isValidBoard(board):
         print(f"illegal moves played :: {diff}")
         return False
 
-    # make sure x has already won
+    # make sure game hasn't already been won
     # playable axes
     axes = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -117,6 +138,11 @@ def isWinningPosition(axisString):
 
 def isBlockablePosition(axisString):
     if axisString.count("x") == 2:
+        return True
+
+
+def isPlayableCorner(axisString):
+    if axisString.count("x") == 1 and axisString.count(" ") == 2:
         return True
 
 
