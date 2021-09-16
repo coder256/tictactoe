@@ -31,22 +31,19 @@ def index():
         # check if board is empty
         if board.count(" ") == 9:
             print("board is empty, play corner")
-            # return play(board, 0) todo uncomment line
-            return f"valid board :: {urllib.parse.quote_plus(play(board, 0))}"  # todo comment out line
+            return play(board, 0)
 
         # check if x played corner move first, play center
         if board.count("x") == 1 and board.count(" ") == 8 and board.index("x") in corners:
             print("x played corner first, play center")
             # play center
-            # return play(board, 4) todo uncomment line
-            return f"valid board :: {urllib.parse.quote_plus(play(board, 4))}"  # todo comment out line
+            return play(board, 4)
 
         # check if x played non corner move first, play corner
         if board.count("x") == 1 and board.count(" ") == 8 and board.index("x") not in corners:
             print("x played non corner first, play corner")
             # play corner
-            # return play(board, 8) todo uncomment line
-            return f"valid board :: {urllib.parse.quote_plus(play(board, 8))}"  # todo comment out line
+            return play(board, 8)
 
         wp = 0
         bp = 0
@@ -99,39 +96,32 @@ def index():
             # play along edge
             for edge in edge_axes:
                 if board[edge[1]] == " ":
-                    # return play(board, edge[1]) todo uncomment line
-                    return f"valid board :: {urllib.parse.quote_plus(play(board, edge[1]))}" # todo comment line out
+                    return play(board, edge[1])
         elif pc > 0:
             # play corner
             if board[cAxis[0]] == " ":
                 print(f"playable corner position :: {cAxis[0]}")
-                # return play(board, cAxis[0]) todo uncomment line
-                return f"valid board :: {urllib.parse.quote_plus(play(board, cAxis[0]))}"  # todo comment line out
+                return play(board, cAxis[0])
             else:
                 print(f"playable corner position :: {cAxis[2]}")
-                # return play(board, cAxis[2]) todo uncomment line
-                return f"valid board :: {urllib.parse.quote_plus(play(board, cAxis[2]))}"  # todo comment line out
+                return play(board, cAxis[2])
         elif isOForkPossible(board):
             print(f"O fork possible")
             for axis in diagonal_axes:
                 if board[axis[0]] == "o":
-                    # return play(board, axis[2]) todo uncomment line
-                    return f"valid board :: {urllib.parse.quote_plus(play(board, axis[2]))}"  # todo comment line out
+                    return play(board, axis[2])
                 else:
-                    # return play(board, axis[0]) todo uncomment line
-                    return f"valid board :: {urllib.parse.quote_plus(play(board, axis[0]))}"  # todo comment line out
+                    return play(board, axis[0])
             pass
         else:
             print("NO PLANNED PLAYABLE POSITION FOUND, PLAY RANDOM")
             for i, c in enumerate(board):
                 if c == " ":
-                    # return play(board, i) todo uncomment line
-                    return f"valid board :: {urllib.parse.quote_plus(play(board, i))}"  # todo comment out line
-
-        return f"valid board :: {urllib.parse.quote_plus(result)}"
-        # return f"valid board :: {result}" todo uncomment line, comment above line
+                    return play(board, i)
     else:
         return invalidBoard()
+
+    return result
 
 
 def isValidBoard(board):
@@ -213,4 +203,6 @@ def isOForkPossible(board):
 
 
 def play(board, position):
+    rr = board[:position] + "o" + board[position+1:]
+    # return f"valid board :: {urllib.parse.quote_plus(rr)}"  # todo comment out line
     return board[:position] + "o" + board[position+1:]
