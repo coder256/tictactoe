@@ -162,7 +162,11 @@ def isValidBoard(board):
 
 
 def invalidBoard():
-    return make_response("Invalid board"), 400
+    # return make_response("Invalid board"), 400
+    return make_response({
+        'status': False,
+        'message': "Invalid board"
+    }), 400
 
 
 def isWinningPosition(axisString):
@@ -205,4 +209,9 @@ def isOForkPossible(board):
 def play(board, position):
     rr = board[:position] + "o" + board[position+1:]
     # return f"valid board :: {urllib.parse.quote_plus(rr)}"  # todo comment out line
-    return board[:position] + "o" + board[position+1:]
+    # return board[:position] + "o" + board[position+1:]
+    return make_response({
+        'status': True,
+        'message': board[:position] + "o" + board[position+1:],
+        'position': position
+    })
